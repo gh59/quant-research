@@ -1,256 +1,258 @@
 # 📊 QuantResearch
 
-> 系统性量化策略研究项目，覆盖 A 股因子挖掘、加密货币择时策略与机器学习信号三条研究主线。持续迭代中。
+> A systematic quantitative strategy research project covering A-share factor mining, crypto timing strategies, and machine learning signals. Continuously updated.
+
+🌐 [中文版](./README_CN.md)
 
 ---
 
-## 🏆 当前最优策略（BTC/USDT 日线）
+## 🏆 Current Best Strategy（BTC/USDT Daily）
 
-**策略：MACD(16,35,9) + 恐贪指数过滤(<80) + 3% 止损**
+**Strategy: MACD(16,35,9) + Fear & Greed Filter(<80) + 3% Stop Loss**
 
-| 指标 | 数值 |
-|------|------|
-| 📅 区间 | 2023.01 — 2026.03 |
-| 💰 累计收益（扣手续费） | **+384%** |
-| 📈 基准（买入持有） | +127% |
+| Metric | Value |
+|--------|-------|
+| 📅 Period | 2023.01 — 2026.03 |
+| 💰 Cumulative Return (after fees) | **+384%** |
+| 📈 Benchmark (Buy & Hold) | +127% |
 | ⚡ Sharpe Ratio | **1.70** |
-| 🛡️ 最大回撤 | **-16%** |
-| 🔁 年均交易次数 | 21次 |
+| 🛡️ Max Drawdown | **-16%** |
+| 🔁 Avg Trades / Year | 21 |
 
 ---
 
-## 🗺️ 策略演进全图
+## 🗺️ Strategy Evolution Map
 
 ```mermaid
 graph TD
-    A["📊 量化交易策略总览"] --> B["🇨🇳 A股策略"]
-    A --> C["₿ 加密货币策略"]
-    A --> D["🤖 机器学习策略"]
+    A["📊 Quant Strategy Overview"] --> B["🇨🇳 A-Share Strategy"]
+    A --> C["₿ Crypto Strategy"]
+    A --> D["🤖 ML Strategy"]
 
-    B --> B1["数据获取\nakshare 沪深300"]
-    B1 --> B2["三因子IC检验"]
-    B2 --> B2a["动量因子\nIC=-0.0023 ❌"]
-    B2 --> B2b["反转因子\nIC=0.0062 ❌"]
-    B2 --> B2c["换手率因子\nIC=0.0290 弱"]
-    B2 --> B2d["多因子合成\nIC=0.0328 ICIR=0.22 弱"]
-    B2d --> B3["回测 v1\n年化2.75% Sharpe0.24 ❌"]
-    B3 --> B4["加入风控\n200日均线+单日止损3%"]
-    B4 --> B4a["累计16.75% Sharpe0.43\n跑赢沪深300 ✅"]
-    B4a --> B5["收益归因分析"]
-    B5 --> B5a["择时贡献65% ✅\n选股贡献≈0 ❌"]
-    B4a --> B6["持仓比例优化\n5%→100%"]
-    B6 --> B6a["100%持仓 Sharpe1.03\n超额收益来自择时 ✅"]
+    B --> B1["Data\nakshare CSI300"]
+    B1 --> B2["3-Factor IC Test"]
+    B2 --> B2a["Momentum\nIC=-0.0023 ❌"]
+    B2 --> B2b["Reversal\nIC=0.0062 ❌"]
+    B2 --> B2c["Turnover\nIC=0.0290 weak"]
+    B2 --> B2d["Multi-Factor\nIC=0.0328 ICIR=0.22 weak"]
+    B2d --> B3["Backtest v1\nSharpe0.24 ❌"]
+    B3 --> B4["Add Risk Control\nMA200 + 3% Stop Loss"]
+    B4 --> B4a["Return+16.75% Sharpe0.43\nBeats CSI300 ✅"]
+    B4a --> B5["Return Attribution"]
+    B5 --> B5a["Timing +65% ✅\nStock Selection ≈0 ❌"]
+    B4a --> B6["Position Sizing\n5%→100%"]
+    B6 --> B6a["100% Position Sharpe1.03\nAlpha from Timing ✅"]
 
-    C --> C1["数据获取\nOKX/币安/CoinMetrics"]
-    C1 --> C2["MACD单币种择时\n默认参数12,26,9"]
-    C2 --> C2a["累计135% Sharpe1.00\n回撤-32% 基础版"]
-    C2 --> C3["参数优化\n穷举所有组合"]
-    C3 --> C3a["最优参数16,35,9\n累计339% Sharpe1.61\n回撤-21% ✅"]
-    C3a --> C4["Walk-Forward验证\n验证集平均Sharpe0.62\n有一定有效性但不稳定 ⚠️"]
-    C3a --> C5["加入因子过滤"]
-    C5 --> C5a["资金费率因子\n阈值0.0003\n累计310% Sharpe1.17"]
-    C5 --> C5b["恐贪指数因子\n阈值<80\n累计423% Sharpe1.70 ✅"]
-    C5 --> C5c["成交量因子\n无效 ❌"]
-    C5 --> C5d["链上活跃地址\nIC=-0.01 失效 ❌"]
-    C5b --> C6["加入3%止损\n累计443% Sharpe1.70\n回撤-15% ✅"]
-    C6 --> C6a["🏆 扣手续费后\n累计384% 每年21次交易\n最终最优策略"]
-    C3a --> C7["小时线策略\n参数150,400,20"]
-    C7 --> C7a["扣成本前682%\n扣成本后439%\n与日线相当 ≈"]
-    C3a --> C8["进阶探索"]
-    C8 --> C8a["多周期共振\n199% Sharpe1.49 ❌\n信号互相干扰"]
-    C8 --> C8b["做空策略\n无脑做空216% ❌\nBTC长期向上偏差"]
-    C8 --> C8c["仓位管理\n三档仓位215% ❌\n波动率自适应154% ❌\nBTC适合全仓进出"]
+    C --> C1["Data\nOKX/Binance/CoinMetrics"]
+    C1 --> C2["MACD Timing\nDefault 12,26,9"]
+    C2 --> C2a["Return+135% Sharpe1.00\nDD-32%"]
+    C2 --> C3["Parameter Optimization"]
+    C3 --> C3a["Best 16,35,9\nReturn+339% Sharpe1.61\nDD-21% ✅"]
+    C3a --> C4["Walk-Forward\nAvg Val Sharpe0.62 ⚠️"]
+    C3a --> C5["Add Signal Filters"]
+    C5 --> C5a["Funding Rate\n+310% Sharpe1.17"]
+    C5 --> C5b["Fear & Greed <80\n+423% Sharpe1.70 ✅"]
+    C5 --> C5c["Volume Factor\nInvalid ❌"]
+    C5 --> C5d["On-chain Addr\nIC=-0.01 ❌"]
+    C5b --> C6["Add 3% Stop Loss\n+443% Sharpe1.70 DD-15% ✅"]
+    C6 --> C6a["🏆 After Fees\n+384% 21 trades/yr\nFinal Best Strategy"]
+    C3a --> C7["Hourly MACD\n150,400,20"]
+    C7 --> C7a["Before fees+682%\nAfter fees+439% ≈"]
+    C3a --> C8["Advanced Research"]
+    C8 --> C8a["Multi-Timeframe\n+199% ❌ Over-filtered"]
+    C8 --> C8b["Short Selling\n+216% ❌ BTC upward bias"]
+    C8 --> C8c["Position Sizing\n+153~215% ❌\nFull position better for BTC"]
 
-    D --> D1["日线XGBoost\n样本1183条"]
-    D1 --> D1a["预测价格方向\n准确率51% ≈随机 ❌"]
-    D1 --> D1b["预测波动率方向\n准确率45% ❌\n样本太少"]
-    D1 --> D2["小时线XGBoost\n样本28217条"]
-    D2 --> D2a["预测价格方向\n准确率47% ❌"]
-    D2 --> D2b["预测波动率高低\n准确率67% ✅\n波动率有聚集效应"]
-    D2b --> D3["ML风险预测策略\n累计200% Sharpe1.10\n跑赢买入持有 ✅"]
-    D3 --> D4["MACD+ML组合\n扣费前178% Sharpe1.34"]
-    D4 --> D4a["扣手续费后48%\n每年158次 手续费45%\n完全失去优势 ❌"]
-    D4a --> D5["结论：ML适合日频波动率预测\n不适合小时频择时信号 ⚠️"]
+    D --> D1["Daily XGBoost\n1183 samples"]
+    D1 --> D1a["Price Direction\n51% acc ❌"]
+    D1 --> D1b["Volatility Direction\n45% acc ❌ too few samples"]
+    D1 --> D2["Hourly XGBoost\n28217 samples"]
+    D2 --> D2a["Price Direction\n47% acc ❌"]
+    D2 --> D2b["Volatility Level\n67% acc ✅ clustering effect"]
+    D2b --> D3["ML Risk Strategy\n+200% Sharpe1.10 ✅"]
+    D3 --> D4["MACD+ML\nBefore fees +178% Sharpe1.34"]
+    D4 --> D4a["After fees +48%\n158 trades/yr fees 45% ❌"]
+    D4a --> D5["Conclusion: ML suits daily vol prediction\nnot hourly timing ⚠️"]
 ```
 
 ---
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 QuantResearch/
-├── 01_data/                    # 🔧 数据工程
-│   └── 01_data_cleaning.ipynb  # 数据获取、复权处理、质量检验
-├── 02_factors/                 # 🔬 因子研究
-│   ├── 02_factor_ictest.ipynb  # 截面因子 IC 检验体系
-│   └── 04_ml_factor.ipynb      # 机器学习因子
-├── 03_backtest/                # 📈 策略回测
-│   ├── 03_backtest.ipynb       # 回测框架、风控模块、收益归因
-│   └── 03_roe_factor.ipynb     # 基本面因子研究
-└── 04_crypto/                  # ₿ 加密货币策略
-    ├── 01_crypto_data.ipynb    # 多交易所数据接入
-    └── 02_live_trading.ipynb   # 实盘执行框架
+├── 01_data/                    # 🔧 Data Engineering
+│   └── 01_data_cleaning.ipynb  # Data acquisition, adjustment, quality check
+├── 02_factors/                 # 🔬 Factor Research
+│   ├── 02_factor_ictest.ipynb  # Cross-sectional IC testing
+│   └── 04_ml_factor.ipynb      # Machine learning factors
+├── 03_backtest/                # 📈 Strategy Backtesting
+│   ├── 03_backtest.ipynb       # Backtest framework, risk control, attribution
+│   └── 03_roe_factor.ipynb     # Fundamental factor research
+└── 04_crypto/                  # ₿ Crypto Strategies
+    ├── 01_crypto_data.ipynb    # Multi-exchange data ingestion
+    └── 02_live_trading.ipynb   # Live execution framework
 ```
 
 ---
 
-## 🇨🇳 研究主线一：A 股因子研究
+## 🇨🇳 Research Track 1: A-Share Factor Research
 
-### 数据工程
+### Data Engineering
 
-- 数据源：akshare，沪深300成分股，前复权日线
-- 数据清洗：复权处理（送股/派息/配股）、停牌缺失值填充、异常值 MAD 截断、全样本避免幸存者偏差
+- Source: akshare, CSI300 constituents, forward-adjusted daily OHLCV
+- Cleaning: dividend/split adjustment, suspension filling, MAD winsorization, survivorship-bias-free universe
 
-### 因子有效性检验
+### Factor IC Test Results
 
-| 因子 | IC 均值 | ICIR | IC>0 比例 | 结论 |
-|------|---------|------|-----------|------|
-| 动量（20日） | -0.0023 | -0.011 | 50.6% | ❌ 无效 |
-| 反转（5日） | 0.0062 | 0.032 | 49.6% | ❌ 无效 |
-| 换手率 | 0.0290 | 0.109 | 55.1% | ⚠️ 弱有效 |
-| 三因子等权合成 | 0.0328 | 0.224 | 58.3% | ⚠️ 弱有效 |
+| Factor | IC Mean | ICIR | IC>0 Rate | Verdict |
+|--------|---------|------|-----------|---------|
+| Momentum (20D) | -0.0023 | -0.011 | 50.6% | ❌ Invalid |
+| Reversal (5D) | 0.0062 | 0.032 | 49.6% | ❌ Invalid |
+| Turnover Rate | 0.0290 | 0.109 | 55.1% | ⚠️ Weak |
+| 3-Factor Composite | 0.0328 | 0.224 | 58.3% | ⚠️ Weak |
 
-> IC 合格标准：均值 > 0.05，ICIR > 0.5，IC>0 比例 > 55%
+> Passing bar: IC Mean > 0.05, ICIR > 0.5, IC>0 > 55%
 
-### 策略回测与收益归因
+### Backtest & Return Attribution
 
-| 策略版本 | 累计收益 | Sharpe | 最大回撤 |
-|----------|---------|--------|---------|
-| 三因子合成基础版 | +8.56% | 0.24 | -22.73% |
-| + 200日均线择时 + 止损 | +16.75% | 0.43 | -15.06% |
-| 沪深300基准 | +10.17% | — | — |
+| Strategy | Cumulative Return | Sharpe | Max DD |
+|----------|------------------|--------|--------|
+| 3-Factor Composite (base) | +8.56% | 0.24 | -22.73% |
+| + MA200 Timing + Stop Loss | +16.75% | 0.43 | -15.06% |
+| CSI300 Benchmark | +10.17% | — | — |
 
-**💡 收益归因结论**
-- 纯择时（200日均线满仓）：累计 +65%，Sharpe 1.15 ✅
-- 纯选股（三因子，无风控）：累计 +8.56%，Sharpe 0.24 ❌
-- **当前超额收益完全来源于择时模块，因子选股贡献为零**
-
----
-
-## ₿ 研究主线二：加密货币择时策略
-
-### 数据基础设施
-
-| 数据类型 | 来源 | 覆盖范围 |
-|----------|------|---------|
-| BTC/USDT 日线 | OKX API | 2023.01 至今，1183条 |
-| BTC/USDT 小时线 | OKX API | 2023.01 至今，28385条 |
-| 资金费率 | 币安 API | 2019.09 至今，7174条 |
-| 恐贪指数 | Alternative.me | 2020.10 至今，2000条 |
-| 链上活跃地址 | CoinMetrics | 2020.10 至今 |
-
-### 策略迭代路径
-
-| 策略版本 | 累计收益 | Sharpe | 最大回撤 |
-|----------|---------|--------|---------|
-| MACD 默认参数 (12,26,9) | +135% | 1.00 | -32% |
-| MACD 最优参数 (16,35,9) | +339% | 1.61 | -21% |
-| + 资金费率过滤 | +310% | 1.17 | -49% |
-| + 恐贪指数过滤(<80) | +423% | 1.70 | -15% |
-| + 3% 止损 | +443% | 1.70 | -15% |
-| **🏆 扣手续费后（最终）** | **+384%** | **1.70** | **-16%** |
-
-### Walk-Forward 验证
-
-| 段 | 最优参数 | 训练Sharpe | 验证Sharpe |
-|----|---------|-----------|-----------|
-| 第1段 | (16,35,9) | 2.99 | -0.65 |
-| 第2段 | (16,35,12) | 2.90 | -0.18 |
-| 第3段 | (20,26,12) | 1.73 | 3.22 |
-| 第4段 | (8,21,7) | 0.42 | 0.09 |
-| **平均** | — | — | **0.62** |
-
-### 因子有效性汇总
-
-| 因子 | 测试结果 | 纳入策略 |
-|------|---------|---------|
-| MACD 趋势跟踪 | Sharpe 1.61 | ✅ 核心信号 |
-| 恐贪指数 | 组合后 Sharpe 1.70 | ✅ 过滤器 |
-| 资金费率 | 单独 Sharpe 1.17 | 备选 |
-| 成交量因子 | 无效，叠加过滤过度 | ❌ |
-| 链上活跃地址 | IC=-0.01，本轮失效 | ❌ |
-
-### 进阶方向探索
-
-| 方向 | 结果 | 原因 |
-|------|------|------|
-| 多周期共振 | +199% ❌ | 持仓时间降至28%，错过主升浪 |
-| 做空策略 | +216% ❌ | BTC 长期向上偏差 |
-| 仓位管理 | +153~215% ❌ | BTC 强趋势，全仓进出更优 |
-| 小时线（扣费后） | +439% ≈ | 每年102次，手续费侵蚀显著 |
+**💡 Attribution Findings**
+- Pure Timing (MA200, full position): +65%, Sharpe 1.15 ✅
+- Pure Stock Selection (3-factor, no risk control): +8.56%, Sharpe 0.24 ❌
+- **All alpha originates from the timing module; factor selection contributes zero**
 
 ---
 
-## 🤖 研究主线三：机器学习信号
+## ₿ Research Track 2: Crypto Timing Strategy
 
-### 实验结果
+### Data Infrastructure
 
-| 预测目标 | 频率 | 样本量 | 准确率 | 结论 |
-|----------|------|--------|--------|------|
-| 未来5天价格涨跌 | 日线 | 1,183 | 51% | ❌ 接近随机 |
-| 未来10天价格涨跌 | 日线 | 1,183 | 45% | ❌ 低于随机 |
-| 未来24小时价格涨跌 | 小时线 | 28,217 | 47% | ❌ 接近随机 |
-| **未来24小时波动率高低** | **小时线** | **28,217** | **67%** | **✅ 有效** |
+| Data Type | Source | Coverage |
+|-----------|--------|---------|
+| BTC/USDT Daily | OKX API | 2023.01–now, 1,183 bars |
+| BTC/USDT Hourly | OKX API | 2023.01–now, 28,385 bars |
+| Funding Rate | Binance API | 2019.09–now, 7,174 records |
+| Fear & Greed Index | Alternative.me | 2020.10–now, 2,000 records |
+| On-chain Active Addresses | CoinMetrics | 2020.10–now |
 
-### 策略表现
+### Strategy Iteration
 
-| 策略 | 累计收益 | Sharpe | 备注 |
-|------|---------|--------|------|
-| ML 风险预测 | +200% | 1.10 | 跑赢买入持有 ✅ |
-| MACD + ML（扣费前） | +178% | 1.34 | — |
-| MACD + ML（扣费后） | +48% | — | 手续费侵蚀45% ❌ |
+| Strategy Version | Cum. Return | Sharpe | Max DD |
+|-----------------|-------------|--------|--------|
+| MACD Default (12,26,9) | +135% | 1.00 | -32% |
+| MACD Optimized (16,35,9) | +339% | 1.61 | -21% |
+| + Funding Rate Filter | +310% | 1.17 | -49% |
+| + Fear & Greed Filter (<80) | +423% | 1.70 | -15% |
+| + 3% Stop Loss | +443% | 1.70 | -15% |
+| **🏆 After Transaction Costs** | **+384%** | **1.70** | **-16%** |
 
-**💡 结论：ML 波动率预测在日频有应用价值，小时频因交易成本问题暂不适合实盘部署**
+### Walk-Forward Validation
+
+| Fold | Best Params | Train Sharpe | Val Sharpe |
+|------|------------|-------------|-----------|
+| 1 | (16,35,9) | 2.99 | -0.65 |
+| 2 | (16,35,12) | 2.90 | -0.18 |
+| 3 | (20,26,12) | 1.73 | 3.22 |
+| 4 | (8,21,7) | 0.42 | 0.09 |
+| **Average** | — | — | **0.62** |
+
+### Factor Validity Summary
+
+| Factor | Test Result | Included |
+|--------|-------------|---------|
+| MACD Trend | Sharpe 1.61, core signal | ✅ Yes |
+| Fear & Greed | Composite Sharpe 1.70 | ✅ Filter |
+| Funding Rate | Standalone Sharpe 1.17 | Candidate |
+| Volume Factor | Invalid, over-filters in combo | ❌ No |
+| On-chain Addresses | IC=-0.01, ETF-cycle failure | ❌ No |
+
+### Advanced Explorations
+
+| Direction | Result | Root Cause |
+|-----------|--------|-----------|
+| Multi-timeframe Confluence | +199% ❌ | Holding time drops to 28%, misses rallies |
+| Short Selling | +216% ❌ | BTC long-term upward bias |
+| Position Sizing | +153–215% ❌ | Strong trend asset; full position dominates |
+| Hourly MACD (after fees) | +439% ≈ | 102 trades/yr; fee drag significant |
 
 ---
 
-## 📌 核心研究结论
+## 🤖 Research Track 3: Machine Learning Signals
 
-| # | 结论 |
-|---|------|
-| 1 | 🎯 **简单策略鲁棒性更强**：MACD+情绪过滤+止损优于所有复杂化尝试 |
-| 2 | 🔍 **收益归因是必要环节**：A股超额收益100%来自择时，选股贡献为零 |
-| 3 | 💸 **手续费决定策略频率下限**：日线21次/年可忽略；小时线100次+/年直接消灭超额收益 |
-| 4 | ⚠️ **Walk-Forward 是防过拟合门槛**：样本内Sharpe最高2.99，验证集平均0.62 |
-| 5 | 📐 **资产特性决定策略形态**：BTC强趋势适合全仓跟踪；A股适合截面因子选股 |
+### Experiment Results
+
+| Target | Frequency | Samples | Accuracy | Verdict |
+|--------|-----------|---------|----------|---------|
+| 5D Price Direction | Daily | 1,183 | 51% | ❌ Near-random |
+| 10D Price Direction | Daily | 1,183 | 45% | ❌ Below random |
+| 24H Price Direction | Hourly | 28,217 | 47% | ❌ Near-random |
+| **24H Volatility Level** | **Hourly** | **28,217** | **67%** | **✅ Effective** |
+
+### Strategy Performance
+
+| Strategy | Cum. Return | Sharpe | Note |
+|----------|-------------|--------|------|
+| ML Risk Prediction | +200% | 1.10 | Beats buy & hold ✅ |
+| MACD + ML (pre-fee) | +178% | 1.34 | — |
+| MACD + ML (post-fee) | +48% | — | 45% eaten by fees ❌ |
+
+**💡 Conclusion: ML volatility prediction adds value at daily frequency; hourly frequency is not deployable due to transaction costs**
 
 ---
 
-## 🛠️ 技术栈
+## 📌 Key Research Findings
+
+| # | Finding |
+|---|---------|
+| 1 | 🎯 **Simple strategies are more robust**: MACD + sentiment filter + stop loss beats all complex attempts |
+| 2 | 🔍 **Return attribution is essential**: 100% of A-share alpha comes from timing; stock selection contributes zero |
+| 3 | 💸 **Transaction costs set the minimum viable frequency**: 21 trades/yr (daily) is negligible; 100+/yr (hourly) eliminates alpha |
+| 4 | ⚠️ **Walk-Forward is mandatory against overfitting**: In-sample Sharpe peaks at 2.99; out-of-sample averages 0.62 |
+| 5 | 📐 **Asset characteristics determine strategy shape**: BTC suits full-position trend following; A-shares suit cross-sectional factor selection |
+
+---
+
+## 🛠️ Tech Stack
 
 ```
 Python 3.10+
-pandas / numpy          数据处理与时间序列
-akshare                 A股行情与财务数据
-ccxt                    加密货币多交易所API接入
-requests                链上数据与情绪数据API
-xgboost / scikit-learn  机器学习建模与评估
-matplotlib              数据可视化
+pandas / numpy          Time series & data processing
+akshare                 A-share market data
+ccxt                    Multi-exchange crypto API
+requests                On-chain & sentiment data APIs
+xgboost / scikit-learn  ML modeling & evaluation
+matplotlib              Visualization
 ```
 
 ---
 
-## 🗂️ 数据文件
+## 🗂️ Data Files
 
-| 文件 | 说明 |
-|------|------|
-| `03_backtest/close_data.csv` | 沪深300成分股日线收盘价 |
-| `03_backtest/volume_data.csv` | 沪深300成分股换手率 |
-| `04_crypto/btc_daily.csv` | BTC/USDT 日线 OHLCV |
-| `04_crypto/btc_1h.csv` | BTC/USDT 小时线 OHLCV |
-| `04_crypto/btc_funding_full.csv` | BTC 永续合约资金费率 |
-| `04_crypto/btc_fng.csv` | 加密货币恐贪指数 |
-| `04_crypto/crypto_close.csv` | 10个主流币种收盘价 |
+| File | Description |
+|------|-------------|
+| `03_backtest/close_data.csv` | CSI300 daily close prices |
+| `03_backtest/volume_data.csv` | CSI300 turnover rates |
+| `04_crypto/btc_daily.csv` | BTC/USDT daily OHLCV |
+| `04_crypto/btc_1h.csv` | BTC/USDT hourly OHLCV |
+| `04_crypto/btc_funding_full.csv` | BTC perpetual funding rates |
+| `04_crypto/btc_fng.csv` | Crypto Fear & Greed Index |
+| `04_crypto/crypto_close.csv` | Top 10 crypto close prices |
 
 ---
 
-## 🔭 后续研究方向
+## 🔭 Roadmap
 
-- [ ] 多币种截面因子选币（扩展至20+币种）
-- [ ] 基于日频波动率预测的仓位动态调整
-- [ ] 实盘执行模块对接（OKX API）
-- [ ] A股基本面因子（ROE/TTM）：待稳定数据源
-- [ ] 跨资产相关性因子研究
+- [ ] Multi-coin cross-sectional factor selection (20+ coins)
+- [ ] Dynamic position sizing via daily volatility prediction
+- [ ] Live execution module (OKX API)
+- [ ] A-share fundamental factors (ROE/TTM): pending stable data source
+- [ ] Cross-asset correlation factor research
 
 ---
 
